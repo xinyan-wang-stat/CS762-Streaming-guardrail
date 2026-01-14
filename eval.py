@@ -24,16 +24,31 @@ def evaluate_safety_head(
     if device is None:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+    # 在加载模型前清理 GPU 内存
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        torch.cuda.synchronize()
+    import gc
+    gc.collect()
+
     build_cache_if_missing = True
     if build_cache_if_missing:
+        # 设置 dtype
+        if bf16 and torch.cuda.is_available():
+            dtype = torch.bfloat16
+        elif torch.cuda.is_available():
+            dtype = torch.float16
+        else:
+            dtype = torch.float32
+        
         base_model = AutoModelForCausalLM.from_pretrained(
             model_name,
-            torch_dtype="auto",
-            device_map=device
+            dtype=dtype,  # 直接指定 dtype
+            device_map="auto"  # 使用 "auto" 让 accelerate 自动分配设备
         )
-        base_model.to(device=device, dtype=torch.bfloat16 if bf16 else torch.float16 if torch.cuda.is_available() else torch.float32)
+        # 注意：使用 device_map="auto" 时，不要调用 .to()，因为模型已经被自动分配到设备上了
         base_model.eval()
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     else:
         tokenizer = None
         base_model = None

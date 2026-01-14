@@ -3,6 +3,14 @@ import torch.nn as nn
 from models import StreamingSafetyHead
 from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig
 
+'''
+这份 demo 想做的是：
+
+1.让一个大模型（Qwen3-8B）对 prompt 生成回答, 同时拿到生成过程中每一步的 hidden states
+2.把这些 hidden states 喂给一个“小模型头”（StreamingSafetyHead）,输出一个 按 token 的风险分数序列（每个 token 一个 risk score）
+
+注意：虽然叫 Streaming，但这个 demo 实际是 “先生成完，再离线算一遍 token 风险分数”（README 也强调了这一点）。
+'''
 
 def fetch_response(model, prompt):
 
@@ -69,7 +77,7 @@ def infer(prompt):
     return [tokenizer.decode(info) for info in output_ids[assistant_start:]], score_guardrail
 
 
-ckpt_path = "ckpts/Qwen-Qwen3-8B/wildguard.pt"
+ckpt_path = "ckpts/Qwen-Qwen3-8B/wildguard.pt" #
 model_name = "Qwen/Qwen3-8B"
 idx_layer = 20
 

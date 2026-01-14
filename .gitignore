@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+
+# Data / checkpoints
+data/
+ckpts/
+
+# Logs / tmp
+*.log
+nohup.out
+*.swp
+
+# OS / editor
+.DS_Store
+
+
+
+
