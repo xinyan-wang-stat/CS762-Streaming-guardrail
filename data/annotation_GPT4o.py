@@ -7,7 +7,7 @@ from pdb import set_trace
 # ===============================
 # CONFIG
 # ===============================
-API_KEY = api_key="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"
+API_KEY = api_key=""
 MODEL = "gpt-4o"
 INPUT_CSV = "seval_qwen3_8b_sample.csv"
 OUTPUT_CSV = "annotated_output.csv"
