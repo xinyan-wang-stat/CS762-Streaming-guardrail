@@ -1,88 +1,17 @@
 Random seed set globally to 42
-Total trainable parameters:  19.933186 M
-Epoch [1/20], UpdateStep [1/60], LR: 1.67e-05, Loss: 0.0223, Acc(token): 0.4237
-Epoch [1/20], UpdateStep [2/60], LR: 3.33e-05, Loss: 0.0228, Acc(token): 0.3370
+Total trainable parameters:  19.935236 M
+Epoch [1/20], UpdateStep [1/60], LR: 1.67e-05, Loss: 0.0234, Acc(token): 0.4527, α: 0.5
+Epoch [1/20], UpdateStep [2/60], LR: 3.33e-05, Loss: 0.0209, Acc(token): 0.3200, α: 0.5
 Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_0.pt
-Epoch [2/20], UpdateStep [3/60], LR: 5.00e-05, Loss: 0.0214, Acc(token): 0.4974
-Epoch [2/20], UpdateStep [4/60], LR: 5.00e-05, Loss: 0.0206, Acc(token): 0.6592
+Epoch [2/20], UpdateStep [3/60], LR: 5.00e-05, Loss: 0.0194, Acc(token): 0.4276, α: 0.5
+Epoch [2/20], UpdateStep [4/60], LR: 5.00e-05, Loss: 0.0200, Acc(token): 0.4595, α: 0.5
 Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_1.pt
-Epoch [3/20], UpdateStep [5/60], LR: 4.98e-05, Loss: 0.0166, Acc(token): 0.8442
-Epoch [3/20], UpdateStep [6/60], LR: 4.97e-05, Loss: 0.0146, Acc(token): 0.8478
+Epoch [3/20], UpdateStep [5/60], LR: 4.98e-05, Loss: 0.0165, Acc(token): 0.6444, α: 0.5
+Epoch [3/20], UpdateStep [6/60], LR: 4.97e-05, Loss: 0.0174, Acc(token): 0.6561, α: 0.5
 Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_2.pt
-Epoch [4/20], UpdateStep [7/60], LR: 4.94e-05, Loss: 0.0116, Acc(token): 0.8912
-Epoch [4/20], UpdateStep [8/60], LR: 4.91e-05, Loss: 0.0144, Acc(token): 0.7432
+Epoch [4/20], UpdateStep [7/60], LR: 4.94e-05, Loss: 0.0136, Acc(token): 0.8273, α: 0.5
+Epoch [4/20], UpdateStep [8/60], LR: 4.91e-05, Loss: 0.0162, Acc(token): 0.6733, α: 0.5
 Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_3.pt
-Epoch [5/20], UpdateStep [9/60], LR: 4.86e-05, Loss: 0.0100, Acc(token): 0.9133
-Epoch [5/20], UpdateStep [10/60], LR: 4.82e-05, Loss: 0.0114, Acc(token): 0.8247
+Epoch [5/20], UpdateStep [9/60], LR: 4.86e-05, Loss: 0.0142, Acc(token): 0.7375, α: 0.5
+Epoch [5/20], UpdateStep [10/60], LR: 4.82e-05, Loss: 0.0102, Acc(token): 0.7956, α: 0.5
 Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_4.pt
-Epoch [6/20], UpdateStep [11/60], LR: 4.76e-05, Loss: 0.0097, Acc(token): 0.8946
-Epoch [6/20], UpdateStep [12/60], LR: 4.70e-05, Loss: 0.0094, Acc(token): 0.9158
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_5.pt
-Epoch [7/20], UpdateStep [13/60], LR: 4.63e-05, Loss: 0.0072, Acc(token): 0.9657
-Epoch [7/20], UpdateStep [14/60], LR: 4.55e-05, Loss: 0.0087, Acc(token): 0.9209
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_6.pt
-Epoch [8/20], UpdateStep [15/60], LR: 4.47e-05, Loss: 0.0060, Acc(token): 0.9775
-Epoch [8/20], UpdateStep [16/60], LR: 4.39e-05, Loss: 0.0057, Acc(token): 0.9618
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_7.pt
-Epoch [9/20], UpdateStep [17/60], LR: 4.29e-05, Loss: 0.0056, Acc(token): 0.9772
-Epoch [9/20], UpdateStep [18/60], LR: 4.19e-05, Loss: 0.0053, Acc(token): 0.9705
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_8.pt
-Epoch [10/20], UpdateStep [19/60], LR: 4.09e-05, Loss: 0.0044, Acc(token): 0.9795
-Epoch [10/20], UpdateStep [20/60], LR: 3.98e-05, Loss: 0.0044, Acc(token): 0.9773
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_9.pt
-Epoch [11/20], UpdateStep [21/60], LR: 3.87e-05, Loss: 0.0040, Acc(token): 0.9768
-Epoch [11/20], UpdateStep [22/60], LR: 3.75e-05, Loss: 0.0040, Acc(token): 0.9802
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_10.pt
-Epoch [12/20], UpdateStep [23/60], LR: 3.63e-05, Loss: 0.0035, Acc(token): 0.9791
-Epoch [12/20], UpdateStep [24/60], LR: 3.50e-05, Loss: 0.0030, Acc(token): 0.9855
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_11.pt
-Epoch [13/20], UpdateStep [25/60], LR: 3.38e-05, Loss: 0.0029, Acc(token): 0.9885
-Epoch [13/20], UpdateStep [26/60], LR: 3.25e-05, Loss: 0.0027, Acc(token): 0.9890
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_12.pt
-Epoch [14/20], UpdateStep [27/60], LR: 3.11e-05, Loss: 0.0026, Acc(token): 0.9841
-Epoch [14/20], UpdateStep [28/60], LR: 2.98e-05, Loss: 0.0027, Acc(token): 0.9893
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_13.pt
-Epoch [15/20], UpdateStep [29/60], LR: 2.84e-05, Loss: 0.0019, Acc(token): 0.9941
-Epoch [15/20], UpdateStep [30/60], LR: 2.71e-05, Loss: 0.0029, Acc(token): 0.9809
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_14.pt
-Epoch [16/20], UpdateStep [31/60], LR: 2.57e-05, Loss: 0.0030, Acc(token): 0.9833
-Epoch [16/20], UpdateStep [32/60], LR: 2.43e-05, Loss: 0.0021, Acc(token): 0.9919
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_15.pt
-Epoch [17/20], UpdateStep [33/60], LR: 2.29e-05, Loss: 0.0024, Acc(token): 0.9817
-Epoch [17/20], UpdateStep [34/60], LR: 2.16e-05, Loss: 0.0024, Acc(token): 0.9855
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_16.pt
-Epoch [18/20], UpdateStep [35/60], LR: 2.02e-05, Loss: 0.0020, Acc(token): 0.9935
-Epoch [18/20], UpdateStep [36/60], LR: 1.89e-05, Loss: 0.0021, Acc(token): 0.9847
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_17.pt
-Epoch [19/20], UpdateStep [37/60], LR: 1.75e-05, Loss: 0.0020, Acc(token): 0.9906
-Epoch [19/20], UpdateStep [38/60], LR: 1.62e-05, Loss: 0.0021, Acc(token): 0.9878
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_18.pt
-Epoch [20/20], UpdateStep [39/60], LR: 1.50e-05, Loss: 0.0023, Acc(token): 0.9903
-Epoch [20/20], UpdateStep [40/60], LR: 1.37e-05, Loss: 0.0020, Acc(token): 0.9859
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_19.pt
-Training complete!
-
-清理 GPU 内存，准备评估...
-GPU 内存清理完成
-ckpt_path:  ckpts/seval_qwen3_8b_sample/model_epoch_19.pt
--------------Response level-------- 
-               precision    recall  f1-score   support
-
-           0     0.6667    0.2500    0.3636         8
-           1     0.6471    0.9167    0.7586        12
-
-    accuracy                         0.6500        20
-   macro avg     0.6569    0.5833    0.5611        20
-weighted avg     0.6549    0.6500    0.6006        20
-
-
------------Streaming level-----------
-               precision    recall  f1-score   support
-
-           0     0.5000    0.1250    0.2000         8
-           1     0.6111    0.9167    0.7333        12
-
-    accuracy                         0.6000        20
-   macro avg     0.5556    0.5208    0.4667        20
-weighted avg     0.5667    0.6000    0.5200        20
-

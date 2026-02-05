@@ -228,7 +228,8 @@ class SafetyDataset(Dataset):  # 定义SafetyDataset类，继承自PyTorch的Dat
                 payload = {  # 构建要保存的数据字典
                     "embeddings": embedding_cpu,          # 嵌入向量，形状: (seq, hidden)
                     "assistant_start": int(assistant_start),  # 助手开始位置（转换为整数）
-                    "labels": labels_cpu                   # 标签，形状: (T_assistant,)
+                    "labels": labels_cpu,                   # token级别标签，形状: (T_assistant,)
+                    "response_label": int(label)           # response级别标签（0或1）
                 }
     
                 tmp_fd, tmp_path = tempfile.mkstemp(dir=self.cache_dir)  # 在缓存目录中创建临时文件
@@ -246,10 +247,12 @@ class SafetyDataset(Dataset):  # 定义SafetyDataset类，继承自PyTorch的Dat
         embeddings = obj["embeddings"]            # 提取嵌入向量，形状: (seq, hidden)，CPU张量
         assistant_start = obj['assistant_start']  # 提取助手开始位置
         labels = torch.as_tensor(obj["labels"], dtype=torch.long)  # 将标签转换为长整型张量，形状: (T_assistant,)
+        response_label = obj.get("response_label", labels[-1].item() if len(labels) > 0 else 0)  # 提取response级别标签，如果没有则使用最后一个token的标签
         return {  # 返回样本字典
             "embeddings": embeddings,  # 嵌入向量
             "assistant_start": assistant_start,  # 助手开始位置
-            "labels": labels  # 标签
+            "labels": labels,  # token级别标签
+            "response_label": int(response_label)  # response级别标签（0或1）
         }
 
 

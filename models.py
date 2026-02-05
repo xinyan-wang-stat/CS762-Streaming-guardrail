@@ -94,7 +94,8 @@ class StreamingSafetyHead(nn.Module):  # 定义流式安全检测头类，继承
 
         d_in = proj_dim  # 设置内部输入维度为投影维度
         self.cfc = CfcCell(d_in, mem_dim)  # 创建CfcCell单元，用于处理序列并维护记忆状态
-        self.mem_head = nn.Linear(mem_dim, num_labels)  # 创建线性分类头，将记忆维度映射到标签数量
+        self.mem_head = nn.Linear(mem_dim, num_labels)  # 创建线性分类头，将记忆维度映射到标签数量（token scorer）
+        self.holistic_head = nn.Linear(mem_dim, num_labels)  # 创建整体分类头，将记忆维度映射到标签数量（response scorer）
 
         self.prefix_to_h = nn.Sequential(  # 创建前缀到隐藏状态的转换网络，使用Sequential容器
             nn.Linear(d_in, mem_dim),  # 线性层：将投影维度映射到记忆维度
@@ -146,7 +147,7 @@ class StreamingSafetyHead(nn.Module):  # 定义流式安全检测头类，继承
 
         return mem_logits  # 返回当前时刻的logits
 
-    def forward(self, x, assistant_start, is_multi=False):  # 定义前向传播方法，x为输入特征，assistant_start为助手序列的起始位置，is_multi为是否多任务（未使用）
+    def forward(self, x, assistant_start, is_multi=False, return_holistic=False):  # 定义前向传播方法，x为输入特征，assistant_start为助手序列的起始位置，is_multi为是否多任务（未使用），return_holistic为是否返回response级别logits
 
         feat =self.attention(x)[0]  # 通过注意力层处理输入，取第一个返回值（context_vector）作为特征
 
@@ -157,7 +158,12 @@ class StreamingSafetyHead(nn.Module):  # 定义流式安全检测头类，继承
 
         logits = torch.cat([self.step(feat[:, assistant_start+t, :], t).unsqueeze(1) for t in range(run_len)], dim=1)  # 对助手序列的每个时间步调用step方法，将所有时刻的logits拼接起来，形状: (B, run_len, num_labels)
 
-        return logits  # 返回所有时刻的logits
+        if return_holistic:  # 如果需要返回response级别的logits
+            # 使用最后一个token的隐藏状态来计算response级别的logits
+            holistic_logits = self.holistic_head(self._h)  # 形状: (B, num_labels)
+            return logits, holistic_logits  # 返回token级别和response级别的logits
+        else:
+            return logits  # 返回所有时刻的logits
 
 
 

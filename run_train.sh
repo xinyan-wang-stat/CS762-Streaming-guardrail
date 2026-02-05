@@ -12,6 +12,9 @@ TEST_DATA_DIR="data/annotated_output_dataset/test"
 # 设置保存目录
 SAVE_DIR="ckpts/seval_qwen3_8b_sample"
 
+# 设置损失权重参数（token级别损失的权重，response级别损失的权重为 1-alpha）
+ALPHA=0.5
+
 # 设置日志文件
 LOG_FILE="log_test.txt"
 
@@ -48,4 +51,5 @@ $UNBUFFER_CMD python train.py \
     --lr 5e-5 \
     --weight_decay 0.1 \
     --num_train_epochs 20 \
+    --alpha "$ALPHA" \
     | tee "$LOG_FILE" 2>&1

@@ -183,19 +183,41 @@ def train(args):  # 定义训练函数，args为命令行参数
             else:  # 其他情况
                 assistant_start = int(assistant_start)  # 直接转换为整数
 
+            # 获取response级别标签
+            response_label = batch.get("response_label", None)  # 从batch中获取response级别标签
+            if response_label is None:  # 如果没有response级别标签，使用最后一个有效token的标签
+                valid_labels = labels[labels != -100]
+                response_label = valid_labels[-1].item() if len(valid_labels) > 0 else 0
+            else:  # 如果有response级别标签
+                if isinstance(response_label, (list, tuple)):  # 如果是列表或元组
+                    response_label = response_label[0]  # 取第一个元素
+                if isinstance(response_label, torch.Tensor):  # 如果是张量
+                    response_label = int(response_label.item())  # 转换为整数
+                else:  # 其他情况
+                    response_label = int(response_label)  # 直接转换为整数
+            response_label = torch.tensor(response_label, device=device, dtype=torch.long)  # 转换为张量并移动到设备
+
             with torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=bf16):  # 启用混合精度训练（自动类型转换）
 
-                # 前向传播，获取每个token的logits，形状: [Bs, N, D]（批次大小，序列长度，类别数）
-                logits = safety_head(feat, assistant_start)  
+                # 前向传播，获取每个token的logits和response级别的logits
+                # logits形状: [Bs, N, D]（批次大小，序列长度，类别数）
+                # holistic_logits形状: [Bs, D]（批次大小，类别数）
+                logits, holistic_logits = safety_head(feat, assistant_start, return_holistic=True)  
 
-                loss_ce = criterion(logits.view(-1, logits.size(-1)), labels.view(-1))  # 计算交叉熵损失：将logits和labels展平后计算
+                # Token级别的损失
+                loss_tok = criterion(logits.view(-1, logits.size(-1)), labels.view(-1))  # 计算交叉熵损失：将logits和labels展平后计算
+
+                # Response级别的损失
+                loss_hol = criterion(holistic_logits, response_label.unsqueeze(0))  # 计算response级别的交叉熵损失
+
+                # 组合损失：α * L_tok + (1-α) * L_hol
+                loss = args.alpha * loss_tok + (1 - args.alpha) * loss_hol
 
                 # anchor_mask = (labels != -100)  # 创建有效标签掩码（标签不为-100的位置），形状: (B, T_assistant)
                 # reg_mask = torch.ones_like(anchor_mask, dtype=torch.bool)  # 创建正则化掩码（所有位置都有效），形状: (B, T_assistant)
                 # loss_smooth = compute_temporal_tv_monotone_loss(  # 计算时序平滑损失（总变差和单调性）
                 #             logits, valid_mask=reg_mask, lam_tv=0.01, lam_mono=0.01  # 传入logits和掩码，总变差权重0.01，单调性权重0.01
                 #             )
-                loss = loss_ce  # 总损失 = 交叉熵损失（暂时只使用CE损失）
 
 
                 loss = loss / args.gradient_acc_steps  # 将损失除以梯度累积步数（梯度累积的归一化）
@@ -224,7 +246,7 @@ def train(args):  # 定义训练函数，args为命令行参数
                 avg_acc = (total_correct / total_tokens) if total_tokens > 0 else 0.0  # 计算平均准确率（正确预测数除以总token数）
                 print(f"Epoch [{epoch+1}/{args.num_train_epochs}], "  # 打印训练信息：当前epoch
                     f"UpdateStep [{completed_steps}/{total_training_steps}], "  # 当前更新步数和总步数
-                    f"LR: {current_lr:.2e}, Loss: {avg_loss:.4f}, Acc(token): {avg_acc:.4f}")  # 学习率、损失和准确率
+                    f"LR: {current_lr:.2e}, Loss: {avg_loss:.4f}, Acc(token): {avg_acc:.4f}, α: {args.alpha}")  # 学习率、损失、准确率和α参数
 
                 total_loss = 0.0  # 重置累计损失
                 total_correct = 0  # 重置累计正确数
@@ -341,6 +363,12 @@ def main():  # 定义主函数
         type=int,  # 参数类型：整数
         default=1,  # 默认值
         help="nums of training epochs"  # 帮助信息
+    )
+    parser.add_argument(  # 添加命令行参数
+        "--alpha",  # 参数名称：α权重
+        type=float,  # 参数类型：浮点数
+        default=0.5,  # 默认值0.5
+        help="Weight for token-level loss in combined loss: alpha * L_tok + (1-alpha) * L_hol"  # 帮助信息：token级别损失的权重
     )
 
     args = parser.parse_args()  # 解析命令行参数，获取参数对象
