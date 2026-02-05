@@ -29,6 +29,11 @@ def convert_csv_to_dataset(csv_path, output_dir, train_ratio=0.8):
     # 确保 label 是整数类型
     df['label'] = df['label'].astype(int)
     
+    # 如果存在 cut_index 列，确保是整数类型（-1 表示没有切分点）
+    if 'cut_index' in df.columns:
+        df['cut_index'] = df['cut_index'].astype(int)
+        print(f"检测到 cut_index 列，有效值数量: {(df['cut_index'] >= 0).sum()}")
+    
     print(f"总样本数: {len(df)}")
     print(f"标签分布:\n{df['label'].value_counts()}")
     

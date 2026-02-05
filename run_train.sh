@@ -6,8 +6,8 @@
 MODEL_PATH="/nobackup/ruqi/models/Qwen3-8B"
 
 # 设置数据路径
-TRAIN_DATA_DIR="data/seval_qwen3_8b_dataset/train"
-TEST_DATA_DIR="data/seval_qwen3_8b_dataset/test"
+TRAIN_DATA_DIR="data/annotated_output_dataset/train"
+TEST_DATA_DIR="data/annotated_output_dataset/test"
 
 # 设置保存目录
 SAVE_DIR="ckpts/seval_qwen3_8b_sample"
@@ -47,5 +47,5 @@ $UNBUFFER_CMD python train.py \
     --idx_layer 32 \
     --lr 5e-5 \
     --weight_decay 0.1 \
-    --num_train_epochs 20 \
+    --num_train_epochs 5 \
     | tee "$LOG_FILE" 2>&1

@@ -1,0 +1,47 @@
+Random seed set globally to 42
+Building per-sample cache into data/annotated_output_dataset/train/safety_cache/-nobackup-ruqi-models-Qwen3-8B/idx32_maxlength1024 ...
+Cache build finished at data/annotated_output_dataset/train/safety_cache/-nobackup-ruqi-models-Qwen3-8B/idx32_maxlength1024
+Total trainable parameters:  19.933186 M
+Epoch [1/5], UpdateStep [1/15], LR: 4.95e-05, Loss: 0.0223, Acc(token): 0.4237
+Epoch [1/5], UpdateStep [2/15], LR: 4.78e-05, Loss: 0.0194, Acc(token): 0.5734
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_0.pt
+Epoch [2/5], UpdateStep [3/15], LR: 4.52e-05, Loss: 0.0179, Acc(token): 0.7151
+Epoch [2/5], UpdateStep [4/15], LR: 4.17e-05, Loss: 0.0166, Acc(token): 0.7399
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_1.pt
+Epoch [3/5], UpdateStep [5/15], LR: 3.75e-05, Loss: 0.0159, Acc(token): 0.7359
+Epoch [3/5], UpdateStep [6/15], LR: 3.27e-05, Loss: 0.0142, Acc(token): 0.7762
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_2.pt
+Epoch [4/5], UpdateStep [7/15], LR: 2.76e-05, Loss: 0.0170, Acc(token): 0.6754
+Epoch [4/5], UpdateStep [8/15], LR: 2.24e-05, Loss: 0.0137, Acc(token): 0.8012
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_3.pt
+Epoch [5/5], UpdateStep [9/15], LR: 1.73e-05, Loss: 0.0145, Acc(token): 0.7848
+Epoch [5/5], UpdateStep [10/15], LR: 1.25e-05, Loss: 0.0147, Acc(token): 0.7797
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_4.pt
+Training complete!
+
+清理 GPU 内存，准备评估...
+GPU 内存清理完成
+Building per-sample cache into data/annotated_output_dataset/test/safety_cache/-nobackup-ruqi-models-Qwen3-8B/idx32_maxlength4096 ...
+Cache build finished at data/annotated_output_dataset/test/safety_cache/-nobackup-ruqi-models-Qwen3-8B/idx32_maxlength4096
+ckpt_path:  ckpts/seval_qwen3_8b_sample/model_epoch_4.pt
+-------------Response level-------- 
+               precision    recall  f1-score   support
+
+           0     0.5000    0.2500    0.3333         8
+           1     0.6250    0.8333    0.7143        12
+
+    accuracy                         0.6000        20
+   macro avg     0.5625    0.5417    0.5238        20
+weighted avg     0.5750    0.6000    0.5619        20
+
+
+-----------Streaming level-----------
+               precision    recall  f1-score   support
+
+           0     0.0000    0.0000    0.0000         8
+           1     0.6000    1.0000    0.7500        12
+
+    accuracy                         0.6000        20
+   macro avg     0.3000    0.5000    0.3750        20
+weighted avg     0.3600    0.6000    0.4500        20
+

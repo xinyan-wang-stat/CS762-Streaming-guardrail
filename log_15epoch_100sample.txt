@@ -1,0 +1,77 @@
+Random seed set globally to 42
+Building per-sample cache into data/seval_qwen3_8b_dataset/train/safety_cache/-nobackup-ruqi-models-Qwen3-8B/idx32_maxlength1024 ...
+Cache build finished at data/seval_qwen3_8b_dataset/train/safety_cache/-nobackup-ruqi-models-Qwen3-8B/idx32_maxlength1024
+Total trainable parameters:  19.933186 M
+Epoch [1/15], UpdateStep [1/45], LR: 2.50e-05, Loss: 0.0187, Acc(token): 0.7031
+Epoch [1/15], UpdateStep [2/45], LR: 5.00e-05, Loss: 0.0184, Acc(token): 0.7141
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_0.pt
+Epoch [2/15], UpdateStep [3/45], LR: 4.99e-05, Loss: 0.0164, Acc(token): 0.7844
+Epoch [2/15], UpdateStep [4/45], LR: 4.97e-05, Loss: 0.0135, Acc(token): 0.8734
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_1.pt
+Epoch [3/15], UpdateStep [5/45], LR: 4.94e-05, Loss: 0.0125, Acc(token): 0.8656
+Epoch [3/15], UpdateStep [6/45], LR: 4.89e-05, Loss: 0.0107, Acc(token): 0.9156
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_2.pt
+Epoch [4/15], UpdateStep [7/45], LR: 4.84e-05, Loss: 0.0096, Acc(token): 0.9313
+Epoch [4/15], UpdateStep [8/45], LR: 4.76e-05, Loss: 0.0092, Acc(token): 0.9688
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_3.pt
+Epoch [5/15], UpdateStep [9/45], LR: 4.68e-05, Loss: 0.0086, Acc(token): 0.9750
+Epoch [5/15], UpdateStep [10/45], LR: 4.58e-05, Loss: 0.0077, Acc(token): 0.9891
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_4.pt
+Epoch [6/15], UpdateStep [11/45], LR: 4.48e-05, Loss: 0.0066, Acc(token): 0.9672
+Epoch [6/15], UpdateStep [12/45], LR: 4.36e-05, Loss: 0.0069, Acc(token): 0.9922
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_5.pt
+Epoch [7/15], UpdateStep [13/45], LR: 4.24e-05, Loss: 0.0059, Acc(token): 0.9859
+Epoch [7/15], UpdateStep [14/45], LR: 4.10e-05, Loss: 0.0059, Acc(token): 0.9953
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_6.pt
+Epoch [8/15], UpdateStep [15/45], LR: 3.95e-05, Loss: 0.0051, Acc(token): 0.9984
+Epoch [8/15], UpdateStep [16/45], LR: 3.80e-05, Loss: 0.0044, Acc(token): 1.0000
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_7.pt
+Epoch [9/15], UpdateStep [17/45], LR: 3.64e-05, Loss: 0.0044, Acc(token): 1.0000
+Epoch [9/15], UpdateStep [18/45], LR: 3.48e-05, Loss: 0.0039, Acc(token): 1.0000
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_8.pt
+Epoch [10/15], UpdateStep [19/45], LR: 3.31e-05, Loss: 0.0038, Acc(token): 1.0000
+Epoch [10/15], UpdateStep [20/45], LR: 3.13e-05, Loss: 0.0035, Acc(token): 1.0000
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_9.pt
+Epoch [11/15], UpdateStep [21/45], LR: 2.95e-05, Loss: 0.0036, Acc(token): 1.0000
+Epoch [11/15], UpdateStep [22/45], LR: 2.77e-05, Loss: 0.0034, Acc(token): 1.0000
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_10.pt
+Epoch [12/15], UpdateStep [23/45], LR: 2.59e-05, Loss: 0.0031, Acc(token): 1.0000
+Epoch [12/15], UpdateStep [24/45], LR: 2.41e-05, Loss: 0.0030, Acc(token): 1.0000
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_11.pt
+Epoch [13/15], UpdateStep [25/45], LR: 2.23e-05, Loss: 0.0029, Acc(token): 1.0000
+Epoch [13/15], UpdateStep [26/45], LR: 2.05e-05, Loss: 0.0030, Acc(token): 1.0000
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_12.pt
+Epoch [14/15], UpdateStep [27/45], LR: 1.87e-05, Loss: 0.0028, Acc(token): 1.0000
+Epoch [14/15], UpdateStep [28/45], LR: 1.69e-05, Loss: 0.0028, Acc(token): 1.0000
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_13.pt
+Epoch [15/15], UpdateStep [29/45], LR: 1.52e-05, Loss: 0.0027, Acc(token): 1.0000
+Epoch [15/15], UpdateStep [30/45], LR: 1.36e-05, Loss: 0.0027, Acc(token): 1.0000
+Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_14.pt
+Training complete!
+
+清理 GPU 内存，准备评估...
+GPU 内存清理完成
+Building per-sample cache into data/seval_qwen3_8b_dataset/test/safety_cache/-nobackup-ruqi-models-Qwen3-8B/idx32_maxlength4096 ...
+Cache build finished at data/seval_qwen3_8b_dataset/test/safety_cache/-nobackup-ruqi-models-Qwen3-8B/idx32_maxlength4096
+ckpt_path:  ckpts/seval_qwen3_8b_sample/model_epoch_14.pt
+-------------Response level-------- 
+               precision    recall  f1-score   support
+
+           0     0.3571    0.6250    0.4545         8
+           1     0.5000    0.2500    0.3333        12
+
+    accuracy                         0.4000        20
+   macro avg     0.4286    0.4375    0.3939        20
+weighted avg     0.4429    0.4000    0.3818        20
+
+
+-----------Streaming level-----------
+               precision    recall  f1-score   support
+
+           0     0.5000    0.1250    0.2000         8
+           1     0.6111    0.9167    0.7333        12
+
+    accuracy                         0.6000        20
+   macro avg     0.5556    0.5208    0.4667        20
+weighted avg     0.5667    0.6000    0.5200        20
+

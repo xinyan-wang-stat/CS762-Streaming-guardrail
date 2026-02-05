@@ -21,6 +21,72 @@ def find_sequence(lst, seq):  # 定义函数：在列表中查找子序列的位
     return -1  # 如果没找到，返回-1
 
 
+def find_whitespace_token_in_tokenizer_tokens(response_text, cut_index, tokenizer):
+    """
+    将 whitespace tokenization 的位置映射到 tokenizer token 的位置
+    
+    Args:
+        response_text: 原始的 response 文本
+        cut_index: whitespace tokenization 中的位置（0-based），-1 表示没有切分点
+        tokenizer: 分词器
+    
+    Returns:
+        cut_token_pos: 在 response 的 tokenizer token 序列中的位置（0-based），-1 表示没有切分点
+    """
+    if cut_index < 0:  # 没有切分点
+        return -1
+    
+    # 将 response 按空格分割成单词
+    words = response_text.split()
+    if cut_index >= len(words):
+        return -1  # cut_index 超出范围
+    
+    # 找到 cut_index 指向的单词及其在原始文本中的字符位置
+    target_word = words[cut_index]
+    
+    # 计算 cut_index 之前所有单词的文本（用于找到字符位置）
+    if cut_index == 0:
+        text_before = ""
+    else:
+        text_before = ' '.join(words[:cut_index]) + ' '
+    
+    # 找到目标单词在原始 response 中的字符起始位置
+    char_pos = len(text_before)
+    
+    # 对 response 进行 tokenization，获取每个 token 的字符位置信息
+    # 使用 tokenizer 的 encode_plus 获取字符到 token 的映射
+    encoding = tokenizer.encode_plus(
+        response_text,
+        return_offsets_mapping=True,
+        add_special_tokens=False
+    )
+    
+    if 'offset_mapping' not in encoding or encoding['offset_mapping'] is None:
+        # 如果没有 offset_mapping，使用备用方法
+        # 直接 tokenize，然后通过解码找到位置
+        token_ids = encoding['input_ids']
+        current_char = 0
+        for token_idx, token_id in enumerate(token_ids):
+            token_text = tokenizer.decode([token_id], skip_special_tokens=False)
+            token_len = len(token_text)
+            if current_char <= char_pos < current_char + token_len:
+                return token_idx
+            current_char += token_len
+        return len(token_ids) - 1
+    else:
+        # 使用 offset_mapping 找到字符位置对应的 token
+        offset_mapping = encoding['offset_mapping']
+        for token_idx, (start_char, end_char) in enumerate(offset_mapping):
+            if start_char <= char_pos < end_char:
+                return token_idx
+            # 如果字符位置在这个 token 之前，返回前一个 token
+            if char_pos < start_char:
+                return max(0, token_idx - 1)
+        
+        # 如果没找到，返回最后一个 token 的位置
+        return len(offset_mapping) - 1
+
+
 class SafetyDataset(Dataset):  # 定义SafetyDataset类，继承自PyTorch的Dataset基类
     """
     Per-sample cached dataset:  # 每个样本缓存的数据集
@@ -124,10 +190,37 @@ class SafetyDataset(Dataset):  # 定义SafetyDataset类，继承自PyTorch的Dat
                 seq_len = model_inputs.input_ids[:, assistant_start:self.assistant_end].shape[-1]  # 计算助手回答部分的序列长度
                 if seq_len <= 0:  # 如果序列长度小于等于0
                     continue  # 跳过该样本
-    
-                labels = torch.full((1, seq_len), -100, dtype=torch.long, device=self.device)  # 创建标签张量，初始值全为-100（忽略索引）
-                labels[:, :self.num_supervised_token] = 0  # 将前num_supervised_token个token的标签设为0（安全）
-                labels[:, -self.num_supervised_token:] = torch.tensor([label], device=self.device).unsqueeze(1).expand(-1, self.num_supervised_token)  # 将最后num_supervised_token个token的标签设为实际标签值
+                
+                # 获取 cut_index（如果存在）
+                cut_index = info.get('cut_index', None)  # 如果没有 cut_index 列，返回 None
+                if cut_index is None:
+                    # 没有 cut_index 列，使用原来的标签生成逻辑
+                    labels = torch.full((1, seq_len), -100, dtype=torch.long, device=self.device)  # 创建标签张量，初始值全为-100（忽略索引）
+                    labels[:, :self.num_supervised_token] = 0  # 将前num_supervised_token个token的标签设为0（安全）
+                    labels[:, -self.num_supervised_token:] = torch.tensor([label], device=self.device).unsqueeze(1).expand(-1, self.num_supervised_token)  # 将最后num_supervised_token个token的标签设为实际标签值
+                else:
+                    cut_index = int(cut_index)
+                    if cut_index < 0:
+                        # cut_index = -1 表示标签为0（安全），所有 token 都是 0
+                        labels = torch.zeros((1, seq_len), dtype=torch.long, device=self.device)
+                    else:
+                        # cut_index >= 0，使用新的标签生成逻辑：基于 cut_index
+                        # 将 whitespace token 位置映射到 tokenizer token 位置
+                        response_text = info['response']
+                        cut_token_pos = find_whitespace_token_in_tokenizer_tokens(
+                            response_text, cut_index, tokenizer
+                        )
+                        
+                        if cut_token_pos >= 0 and cut_token_pos < seq_len:
+                            # cut_index 之前（不包括）的 token = 0
+                            # cut_index 及之后（包括）的 token = 1
+                            labels = torch.zeros((1, seq_len), dtype=torch.long, device=self.device)  # 初始化为0
+                            labels[:, cut_token_pos:] = 1  # cut_token_pos 及之后设为1
+                        else:
+                            # 如果映射失败，使用原来的逻辑
+                            labels = torch.full((1, seq_len), -100, dtype=torch.long, device=self.device)
+                            labels[:, :self.num_supervised_token] = 0
+                            labels[:, -self.num_supervised_token:] = torch.tensor([label], device=self.device).unsqueeze(1).expand(-1, self.num_supervised_token)
     
                 embedding_cpu = hidden_states[0, :self.assistant_end, :].detach().cpu().contiguous()  # 提取hidden states并转移到CPU，形状: (seq, hidden)
                 labels_cpu = labels[0].detach().cpu().contiguous()  # 提取标签并转移到CPU，形状: (T_assistant,)
