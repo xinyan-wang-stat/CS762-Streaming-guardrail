@@ -259,9 +259,13 @@ def train(args):  # 定义训练函数，args为命令行参数
             print("Reached max_steps. Stopping training.")  # 打印停止训练的信息
             break  # 跳出外层循环
 
-        ckpt_path = os.path.join(args.save_dir, f"model_epoch_{epoch}.pt")  # 构建检查点文件路径（每个epoch保存一次）
-        torch.save(safety_head.state_dict(), ckpt_path)  # 保存模型的状态字典（参数）
-        print(f"Saved checkpoint: {ckpt_path}")  # 打印保存的检查点路径
+        # 注释掉保存checkpoint的代码（暂时不保存）
+        # ckpt_path = os.path.join(args.save_dir, f"model_epoch_{epoch}.pt")  # 构建检查点文件路径（每个epoch保存一次）
+        # torch.save(safety_head.state_dict(), ckpt_path)  # 保存模型的状态字典（参数）
+        # print(f"Saved checkpoint: {ckpt_path}")  # 打印保存的检查点路径
+        
+        # 为了评估代码能正常运行，仍然定义ckpt_path（指向最后一个epoch的路径）
+        ckpt_path = os.path.join(args.save_dir, f"model_epoch_{epoch}.pt")  # 构建检查点文件路径（用于评估，但实际不保存）
 
     print("Training complete!")  # 打印训练完成信息
 

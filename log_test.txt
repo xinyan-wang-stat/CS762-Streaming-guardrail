@@ -1,17 +1,32 @@
 Random seed set globally to 42
 Total trainable parameters:  19.935236 M
-Epoch [1/20], UpdateStep [1/60], LR: 1.67e-05, Loss: 0.0234, Acc(token): 0.4527, α: 0.5
-Epoch [1/20], UpdateStep [2/60], LR: 3.33e-05, Loss: 0.0209, Acc(token): 0.3200, α: 0.5
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_0.pt
-Epoch [2/20], UpdateStep [3/60], LR: 5.00e-05, Loss: 0.0194, Acc(token): 0.4276, α: 0.5
-Epoch [2/20], UpdateStep [4/60], LR: 5.00e-05, Loss: 0.0200, Acc(token): 0.4595, α: 0.5
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_1.pt
-Epoch [3/20], UpdateStep [5/60], LR: 4.98e-05, Loss: 0.0165, Acc(token): 0.6444, α: 0.5
-Epoch [3/20], UpdateStep [6/60], LR: 4.97e-05, Loss: 0.0174, Acc(token): 0.6561, α: 0.5
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_2.pt
-Epoch [4/20], UpdateStep [7/60], LR: 4.94e-05, Loss: 0.0136, Acc(token): 0.8273, α: 0.5
-Epoch [4/20], UpdateStep [8/60], LR: 4.91e-05, Loss: 0.0162, Acc(token): 0.6733, α: 0.5
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_3.pt
-Epoch [5/20], UpdateStep [9/60], LR: 4.86e-05, Loss: 0.0142, Acc(token): 0.7375, α: 0.5
-Epoch [5/20], UpdateStep [10/60], LR: 4.82e-05, Loss: 0.0102, Acc(token): 0.7956, α: 0.5
-Saved checkpoint: ckpts/seval_qwen3_8b_sample/model_epoch_4.pt
+Epoch [1/20], UpdateStep [1/60], LR: 1.67e-05, Loss: 0.0220, Acc(token): 0.4527, α: 1.0
+Epoch [1/20], UpdateStep [2/60], LR: 3.33e-05, Loss: 0.0233, Acc(token): 0.3200, α: 1.0
+Epoch [2/20], UpdateStep [3/60], LR: 5.00e-05, Loss: 0.0209, Acc(token): 0.4554, α: 1.0
+Epoch [2/20], UpdateStep [4/60], LR: 5.00e-05, Loss: 0.0211, Acc(token): 0.5009, α: 1.0
+Epoch [3/20], UpdateStep [5/60], LR: 4.98e-05, Loss: 0.0164, Acc(token): 0.8100, α: 1.0
+Epoch [3/20], UpdateStep [6/60], LR: 4.97e-05, Loss: 0.0162, Acc(token): 0.7763, α: 1.0
+Epoch [4/20], UpdateStep [7/60], LR: 4.94e-05, Loss: 0.0117, Acc(token): 0.9378, α: 1.0
+Epoch [4/20], UpdateStep [8/60], LR: 4.91e-05, Loss: 0.0107, Acc(token): 0.9045, α: 1.0
+Epoch [5/20], UpdateStep [9/60], LR: 4.86e-05, Loss: 0.0112, Acc(token): 0.8900, α: 1.0
+Epoch [5/20], UpdateStep [10/60], LR: 4.82e-05, Loss: 0.0090, Acc(token): 0.9323, α: 1.0
+Epoch [6/20], UpdateStep [11/60], LR: 4.76e-05, Loss: 0.0073, Acc(token): 0.9682, α: 1.0
+Epoch [6/20], UpdateStep [12/60], LR: 4.70e-05, Loss: 0.0079, Acc(token): 0.9572, α: 1.0
+Epoch [7/20], UpdateStep [13/60], LR: 4.63e-05, Loss: 0.0077, Acc(token): 0.9403, α: 1.0
+Epoch [7/20], UpdateStep [14/60], LR: 4.55e-05, Loss: 0.0059, Acc(token): 0.9775, α: 1.0
+Epoch [8/20], UpdateStep [15/60], LR: 4.47e-05, Loss: 0.0054, Acc(token): 0.9764, α: 1.0
+Epoch [8/20], UpdateStep [16/60], LR: 4.39e-05, Loss: 0.0044, Acc(token): 0.9807, α: 1.0
+Epoch [9/20], UpdateStep [17/60], LR: 4.29e-05, Loss: 0.0051, Acc(token): 0.9815, α: 1.0
+Epoch [9/20], UpdateStep [18/60], LR: 4.19e-05, Loss: 0.0041, Acc(token): 0.9890, α: 1.0
+Epoch [10/20], UpdateStep [19/60], LR: 4.09e-05, Loss: 0.0037, Acc(token): 0.9927, α: 1.0
+Epoch [10/20], UpdateStep [20/60], LR: 3.98e-05, Loss: 0.0042, Acc(token): 0.9745, α: 1.0
+Epoch [11/20], UpdateStep [21/60], LR: 3.87e-05, Loss: 0.0032, Acc(token): 0.9884, α: 1.0
+Epoch [11/20], UpdateStep [22/60], LR: 3.75e-05, Loss: 0.0034, Acc(token): 0.9839, α: 1.0
+Epoch [12/20], UpdateStep [23/60], LR: 3.63e-05, Loss: 0.0033, Acc(token): 0.9755, α: 1.0
+Epoch [12/20], UpdateStep [24/60], LR: 3.50e-05, Loss: 0.0029, Acc(token): 0.9925, α: 1.0
+Epoch [13/20], UpdateStep [25/60], LR: 3.38e-05, Loss: 0.0025, Acc(token): 0.9849, α: 1.0
+Epoch [13/20], UpdateStep [26/60], LR: 3.25e-05, Loss: 0.0027, Acc(token): 0.9864, α: 1.0
+Epoch [14/20], UpdateStep [27/60], LR: 3.11e-05, Loss: 0.0022, Acc(token): 0.9901, α: 1.0
+Epoch [14/20], UpdateStep [28/60], LR: 2.98e-05, Loss: 0.0026, Acc(token): 0.9915, α: 1.0
+Epoch [15/20], UpdateStep [29/60], LR: 2.84e-05, Loss: 0.0025, Acc(token): 0.9908, α: 1.0
+Epoch [15/20], UpdateStep [30/60], LR: 2.71e-05, Loss: 0.0020, Acc(token): 0.9927, α: 1.0
