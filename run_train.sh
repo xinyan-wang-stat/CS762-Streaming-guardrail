@@ -47,5 +47,5 @@ $UNBUFFER_CMD python train.py \
     --idx_layer 32 \
     --lr 5e-5 \
     --weight_decay 0.1 \
-    --num_train_epochs 5 \
+    --num_train_epochs 20 \
     | tee "$LOG_FILE" 2>&1

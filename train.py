@@ -190,13 +190,12 @@ def train(args):  # 定义训练函数，args为命令行参数
 
                 loss_ce = criterion(logits.view(-1, logits.size(-1)), labels.view(-1))  # 计算交叉熵损失：将logits和labels展平后计算
 
-                anchor_mask = (labels != -100)  # 创建有效标签掩码（标签不为-100的位置），形状: (B, T_assistant)
-                reg_mask = torch.ones_like(anchor_mask, dtype=torch.bool)  # 创建正则化掩码（所有位置都有效），形状: (B, T_assistant)
-                loss_smooth = compute_temporal_tv_monotone_loss(  # 计算时序平滑损失（总变差和单调性）
-                            logits, valid_mask=reg_mask, lam_tv=0.01, lam_mono=0.01  # 传入logits和掩码，总变差权重0.01，单调性权重0.01
-                            )
-
-                loss = loss_ce + loss_smooth  # 总损失 = 交叉熵损失 + 平滑损失
+                # anchor_mask = (labels != -100)  # 创建有效标签掩码（标签不为-100的位置），形状: (B, T_assistant)
+                # reg_mask = torch.ones_like(anchor_mask, dtype=torch.bool)  # 创建正则化掩码（所有位置都有效），形状: (B, T_assistant)
+                # loss_smooth = compute_temporal_tv_monotone_loss(  # 计算时序平滑损失（总变差和单调性）
+                #             logits, valid_mask=reg_mask, lam_tv=0.01, lam_mono=0.01  # 传入logits和掩码，总变差权重0.01，单调性权重0.01
+                #             )
+                loss = loss_ce  # 总损失 = 交叉熵损失（暂时只使用CE损失）
 
 
                 loss = loss / args.gradient_acc_steps  # 将损失除以梯度累积步数（梯度累积的归一化）
