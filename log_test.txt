@@ -30,3 +30,39 @@ Epoch [14/20], UpdateStep [27/60], LR: 3.11e-05, Loss: 0.0022, Acc(token): 0.990
 Epoch [14/20], UpdateStep [28/60], LR: 2.98e-05, Loss: 0.0026, Acc(token): 0.9915, α: 1.0
 Epoch [15/20], UpdateStep [29/60], LR: 2.84e-05, Loss: 0.0025, Acc(token): 0.9908, α: 1.0
 Epoch [15/20], UpdateStep [30/60], LR: 2.71e-05, Loss: 0.0020, Acc(token): 0.9927, α: 1.0
+Epoch [16/20], UpdateStep [31/60], LR: 2.57e-05, Loss: 0.0020, Acc(token): 0.9893, α: 1.0
+Epoch [16/20], UpdateStep [32/60], LR: 2.43e-05, Loss: 0.0022, Acc(token): 0.9937, α: 1.0
+Epoch [17/20], UpdateStep [33/60], LR: 2.29e-05, Loss: 0.0022, Acc(token): 0.9900, α: 1.0
+Epoch [17/20], UpdateStep [34/60], LR: 2.16e-05, Loss: 0.0019, Acc(token): 0.9945, α: 1.0
+Epoch [18/20], UpdateStep [35/60], LR: 2.02e-05, Loss: 0.0019, Acc(token): 0.9953, α: 1.0
+Epoch [18/20], UpdateStep [36/60], LR: 1.89e-05, Loss: 0.0019, Acc(token): 0.9878, α: 1.0
+Epoch [19/20], UpdateStep [37/60], LR: 1.75e-05, Loss: 0.0017, Acc(token): 0.9943, α: 1.0
+Epoch [19/20], UpdateStep [38/60], LR: 1.62e-05, Loss: 0.0018, Acc(token): 0.9908, α: 1.0
+Epoch [20/20], UpdateStep [39/60], LR: 1.50e-05, Loss: 0.0019, Acc(token): 0.9957, α: 1.0
+Epoch [20/20], UpdateStep [40/60], LR: 1.37e-05, Loss: 0.0016, Acc(token): 0.9909, α: 1.0
+Training complete!
+
+清理 GPU 内存，准备评估...
+GPU 内存清理完成
+ckpt_path:  ckpts/seval_qwen3_8b_sample/model_epoch_19.pt
+-------------Response level-------- 
+               precision    recall  f1-score   support
+
+           0     0.4000    0.2500    0.3077         8
+           1     0.6000    0.7500    0.6667        12
+
+    accuracy                         0.5500        20
+   macro avg     0.5000    0.5000    0.4872        20
+weighted avg     0.5200    0.5500    0.5231        20
+
+
+-----------Streaming level-----------
+               precision    recall  f1-score   support
+
+           0     1.0000    0.1250    0.2222         8
+           1     0.6316    1.0000    0.7742        12
+
+    accuracy                         0.6500        20
+   macro avg     0.8158    0.5625    0.4982        20
+weighted avg     0.7789    0.6500    0.5534        20
+
