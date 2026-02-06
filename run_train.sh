@@ -13,7 +13,8 @@ TEST_DATA_DIR="data/annotated_output_dataset/test"
 SAVE_DIR="ckpts/seval_qwen3_8b_sample"
 
 # 设置损失权重参数（token级别损失的权重，response级别损失的权重为 1-alpha）
-ALPHA=1
+ALPHA=0 # only response_level CE
+#ALPHA=1 # only token_level CE
 
 # 设置日志文件
 LOG_FILE="log_test.txt"

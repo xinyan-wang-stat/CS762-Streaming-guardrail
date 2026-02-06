@@ -162,6 +162,7 @@ def train(args):  # 定义训练函数，args为命令行参数
     global_step = 0  # 初始化全局步数计数器
     completed_steps = 0  # 初始化已完成的更新步数计数器
     safety_head.train()  # 将模型设置为训练模式（启用dropout等训练时的行为）
+    last_completed_epoch = -1  # 跟踪最后一个完成的epoch
 
     for epoch in range(args.num_train_epochs):  # 遍历每个训练epoch
         total_loss = 0.0  # 初始化累计损失（用于梯度累积期间的统计）
@@ -259,15 +260,26 @@ def train(args):  # 定义训练函数，args为命令行参数
             print("Reached max_steps. Stopping training.")  # 打印停止训练的信息
             break  # 跳出外层循环
 
-        # 注释掉保存checkpoint的代码（暂时不保存）
+        # 注释掉每个epoch保存checkpoint的代码（暂时不保存）
         # ckpt_path = os.path.join(args.save_dir, f"model_epoch_{epoch}.pt")  # 构建检查点文件路径（每个epoch保存一次）
         # torch.save(safety_head.state_dict(), ckpt_path)  # 保存模型的状态字典（参数）
         # print(f"Saved checkpoint: {ckpt_path}")  # 打印保存的检查点路径
         
-        # 为了评估代码能正常运行，仍然定义ckpt_path（指向最后一个epoch的路径）
-        ckpt_path = os.path.join(args.save_dir, f"model_epoch_{epoch}.pt")  # 构建检查点文件路径（用于评估，但实际不保存）
+        # 记录最后一个完成的epoch
+        last_completed_epoch = epoch
 
     print("Training complete!")  # 打印训练完成信息
+
+    # 保存最后一个完成的epoch的模型
+    if last_completed_epoch >= 0:  # 确保至少完成了一个epoch
+        ckpt_path = os.path.join(args.save_dir, f"model_epoch_{last_completed_epoch}.pt")  # 构建最后一个epoch的检查点文件路径
+        torch.save(safety_head.state_dict(), ckpt_path)  # 保存模型的状态字典（参数）
+        print(f"Saved final checkpoint: {ckpt_path}")  # 打印保存的检查点路径
+    else:
+        # 如果没有完成任何epoch，使用默认路径（这种情况不应该发生）
+        ckpt_path = os.path.join(args.save_dir, f"model_epoch_0.pt")
+        torch.save(safety_head.state_dict(), ckpt_path)
+        print(f"Warning: No epoch completed, saved checkpoint as: {ckpt_path}")
 
     # 在评估前彻底清理 GPU 内存
     print("\n清理 GPU 内存，准备评估...")
