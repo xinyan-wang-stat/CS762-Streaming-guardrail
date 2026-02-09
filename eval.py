@@ -3,7 +3,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
-from sklearn.metrics import f1_score, classification_report
+from sklearn.metrics import f1_score, classification_report, accuracy_score, precision_recall_fscore_support
+import pandas as pd
 from models import StreamingSafetyHead
 from dataset import SafetyDataset
 from tqdm import tqdm
@@ -41,14 +42,10 @@ def evaluate_safety_head(
         else:
             dtype = torch.float32
         
-        # Use "cuda:0" to avoid full-disk offload (which raises in accelerate).
-        # Use low_cpu_mem_usage=False if OOM on load.
-        device_map = "cuda:0" if torch.cuda.is_available() else None
         base_model = AutoModelForCausalLM.from_pretrained(
             model_name,
-            torch_dtype=dtype,
-            device_map=device_map,
-            low_cpu_mem_usage=True,
+            dtype=dtype,  # 直接指定 dtype
+            device_map="auto"  # 使用 "auto" 让 accelerate 自动分配设备
         )
         # 注意：使用 device_map="auto" 时，不要调用 .to()，因为模型已经被自动分配到设备上了
         base_model.eval()
@@ -92,21 +89,21 @@ def evaluate_safety_head(
     first_gt_1_list = []   # first position where label==1 per sample
     first_pred_1_list = []  # first position where pred==1 per sample
 
-    autocast_enabled = bf16 and (device.type == "cuda")
-
     def first_pos(lst, val=1):
         for i, x in enumerate(lst):
             if x == val:
                 return i
         return None
 
+    autocast_enabled = bf16 and (device.type == "cuda")
+    
     with torch.no_grad(), torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=autocast_enabled):
         for batch in tqdm(test_loader):
             assert batch["labels"].size(0) == 1, "Current evaluation assumes batch_size=1 for streaming."
-
+    
             labels = batch["labels"].to(device)            # (1, T_assistant)
             feat = batch["embeddings"].to(device)          # (seq, hidden)
-
+    
             assistant_start = batch["assistant_start"]
             if isinstance(assistant_start, (list, tuple)):
                 assistant_start = assistant_start[0]
@@ -114,53 +111,106 @@ def evaluate_safety_head(
                 assistant_start = int(assistant_start.item())
             else:
                 assistant_start = int(assistant_start)
+    
+            logits = safety_head(feat, assistant_start)
 
-            logits = safety_head(feat, assistant_start, )
-
-            preds = logits.argmax(dim=-1)  # (1, T_assistant)
-
+            preds = logits.argmax(dim=-1)  # (1, T_assistant) - token级别预测
             preds_valid = preds.view(-1).tolist()
             labels_valid = labels.view(-1).tolist()
 
-            predictions.append(preds_valid)
-            references.append(labels_valid[-1])
             first_gt_1_list.append(first_pos(labels_valid, 1))
             first_pred_1_list.append(first_pos(preds_valid, 1))
+            predictions.append(preds_valid)
+            references.append(labels_valid[-1])
+       
+    return predictions, references, first_gt_1_list, first_pred_1_list
 
-    # Compare first label-1 position (only for harmful responses)
+
+def compute_metrics(y_true, y_pred):
+    """计算评估指标"""
+    accuracy = accuracy_score(y_true, y_pred)
+    precision, recall, f1, _ = precision_recall_fscore_support(y_true, y_pred, average=None, zero_division=0)
+    precision_macro, recall_macro, f1_macro, _ = precision_recall_fscore_support(y_true, y_pred, average='macro', zero_division=0)
+    precision_weighted, recall_weighted, f1_weighted, _ = precision_recall_fscore_support(y_true, y_pred, average='weighted', zero_division=0)
+    
+    return {
+        'accuracy': accuracy,
+        'precision_class_0': precision[0] if len(precision) > 0 else 0.0,
+        'precision_class_1': precision[1] if len(precision) > 1 else 0.0,
+        'recall_class_0': recall[0] if len(recall) > 0 else 0.0,
+        'recall_class_1': recall[1] if len(recall) > 1 else 0.0,
+        'f1_class_0': f1[0] if len(f1) > 0 else 0.0,
+        'f1_class_1': f1[1] if len(f1) > 1 else 0.0,
+        'precision_macro': precision_macro,
+        'recall_macro': recall_macro,
+        'f1_macro': f1_macro,
+        'precision_weighted': precision_weighted,
+        'recall_weighted': recall_weighted,
+        'f1_weighted': f1_weighted,
+    }
+
+
+def evaluate_and_get_metrics(ckpt_path, test_dataset_dir, model_name, idx_layer, max_length=4096, batch_size=1, num_workers=2, bf16=True):
+    """评估模型并返回结构化的评估指标"""
+    predictions, references, first_gt_1_list, first_pred_1_list = evaluate_safety_head(
+        ckpt_path=ckpt_path,
+        test_dataset_dir=test_dataset_dir,
+        model_name=model_name,
+        idx_layer=idx_layer,
+        max_length=max_length,
+        batch_size=batch_size,
+        num_workers=num_workers,
+        bf16=bf16,
+    )
+
+    print('ckpt_path: ', ckpt_path)
+    # Response level: use second-to-last token prediction (no holistic head)
+    print('-------------Response level-------- \n', classification_report(references, [pred[-2] for pred in predictions], digits=4))
+
+    # Streaming level 评估
+    streaming_preds = [max(pred) for pred in predictions]
+    print('\n-----------Streaming level-----------\n', classification_report(references, streaming_preds, digits=4))
+
+    # Offset: first harmful token (label 1) position — same as eval.py
     harmful_indices = [i for i in range(len(references)) if references[i] == 1]
     gt_positions = [first_gt_1_list[i] for i in harmful_indices if first_gt_1_list[i] is not None]
     pred_positions = []
     for i in harmful_indices:
         if first_gt_1_list[i] is not None:
             p = first_pred_1_list[i]
-            pred_positions.append(len(predictions[i]) if p is None else p)
-    first_harmful_lines = []
+            token_len = len(predictions[i])
+            pred_positions.append(token_len if p is None else p)
     if gt_positions:
         diffs = [p - g for g, p in zip(gt_positions, pred_positions)]
-        mae = sum(abs(d) for d in diffs) / len(diffs)
-        first_harmful_lines = [
-            "\n-----------First harmful token (label 1) position-----------",
-            f"Only harmful responses (n={len(gt_positions)}): GT first-1 vs Pred first-1",
-            f"MAE (|pred_pos - gt_pos|): {mae:.2f}",
-            f"Mean diff (pred - gt, negative=earlier): {sum(diffs)/len(diffs):.2f}",
-        ]
-        for line in first_harmful_lines:
-            print(line)
-
-    return predictions, references
+        n = len(diffs)
+        mae = sum(abs(d) for d in diffs) / n
+        mean_diff = sum(diffs) / n
+        variance = sum((d - mean_diff) ** 2 for d in diffs) / n if n > 0 else 0.0
+        print("\n-----------First harmful token (label 1) position (offset)-----------")
+        print(f"Only harmful responses (n={len(gt_positions)}): GT first-1 vs Pred first-1")
+        print(f"MAE (|pred_pos - gt_pos|): {mae:.2f}")
+        print(f"Mean diff (pred - gt, negative=earlier): {mean_diff:.2f}")
+        print(f"Variance of offset (pred - gt): {variance:.2f}")
+    
+    response_metrics = compute_metrics(references, [pred[-2] for pred in predictions])
+    streaming_metrics = compute_metrics(references, streaming_preds)
+    
+    return {
+        'response_level': response_metrics,
+        'streaming_level': streaming_metrics
+    }
 
 
 if __name__=='__main__':
     import argparse
     p = argparse.ArgumentParser()
-    p.add_argument("--ckpt_path", type=str, default="ckpts/Qwen-Qwen3-8B/seval.pt")
-    p.add_argument("--test_dataset_dir", type=str, default="data/s_eval/qwen3_8b/test/")
+    p.add_argument("--ckpt_path", type=str, default="ckpt/model_epoch_19_alpha_eq_0.5.pt", help="Path to safety head checkpoint")
+    p.add_argument("--test_dataset_dir", type=str, default="data/seval_qwen3_8b_dataset/test/")
     p.add_argument("--model_name", type=str, default="Qwen/Qwen3-8B")
     p.add_argument("--idx_layer", type=int, default=21)
     args = p.parse_args()
 
-    predictions, references = evaluate_safety_head(
+    metrics = evaluate_and_get_metrics(
         ckpt_path=args.ckpt_path,
         test_dataset_dir=args.test_dataset_dir,
         model_name=args.model_name,
@@ -170,11 +220,8 @@ if __name__=='__main__':
         num_workers=2,
         bf16=True
     )
-
-    resp_report = classification_report(references, [pred[-2] for pred in predictions], digits=4)
-    stream_report = classification_report(references, [max(pred) for pred in predictions], digits=4)
-
-    print('ckpt_path: ', args.ckpt_path)
-    print('-------------Response level-------- \n', resp_report)
-    print('\n-----------Streaming level-----------\n', stream_report)
+    
+    print('\n========== 评估指标汇总 ==========')
+    print('Response Level:', metrics['response_level'])
+    print('Streaming Level:', metrics['streaming_level'])
 

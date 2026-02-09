@@ -9,7 +9,7 @@ for CKPT_PATH in \
   "ckpt/model_epoch_19_alpha_eq_0.5.pt" \
   "ckpt/model_epoch_19_alpha_eq_1.0.pt"; do
   echo "========== Evaluating $CKPT_PATH =========="
-  python eval.py \
+  python eval_ruqi.py \
     --ckpt_path "$CKPT_PATH" \
     --test_dataset_dir "$TEST_DIR" \
     --model_name "Qwen/Qwen3-8B" \
