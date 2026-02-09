@@ -135,13 +135,18 @@ def evaluate_safety_head(
         if first_gt_1_list[i] is not None:
             p = first_pred_1_list[i]
             pred_positions.append(len(predictions[i]) if p is None else p)
+    first_harmful_lines = []
     if gt_positions:
         diffs = [p - g for g, p in zip(gt_positions, pred_positions)]
         mae = sum(abs(d) for d in diffs) / len(diffs)
-        print("\n-----------First harmful token (label 1) position-----------")
-        print(f"Only harmful responses (n={len(gt_positions)}): GT first-1 vs Pred first-1")
-        print(f"MAE (|pred_pos - gt_pos|): {mae:.2f}")
-        print(f"Mean diff (pred - gt, negative=earlier): {sum(diffs)/len(diffs):.2f}")
+        first_harmful_lines = [
+            "\n-----------First harmful token (label 1) position-----------",
+            f"Only harmful responses (n={len(gt_positions)}): GT first-1 vs Pred first-1",
+            f"MAE (|pred_pos - gt_pos|): {mae:.2f}",
+            f"Mean diff (pred - gt, negative=earlier): {sum(diffs)/len(diffs):.2f}",
+        ]
+        for line in first_harmful_lines:
+            print(line)
 
     return predictions, references
 
@@ -166,8 +171,10 @@ if __name__=='__main__':
         bf16=True
     )
 
-    print('ckpt_path: ', args.ckpt_path)
-    print('-------------Response level-------- \n', classification_report(references, [pred[-2] for pred in predictions], digits=4))
+    resp_report = classification_report(references, [pred[-2] for pred in predictions], digits=4)
+    stream_report = classification_report(references, [max(pred) for pred in predictions], digits=4)
 
-    print('\n-----------Streaming level-----------\n', classification_report(references, [max(pred) for pred in predictions], digits=4))
+    print('ckpt_path: ', args.ckpt_path)
+    print('-------------Response level-------- \n', resp_report)
+    print('\n-----------Streaming level-----------\n', stream_report)
 
