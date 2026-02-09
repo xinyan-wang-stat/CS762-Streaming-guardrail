@@ -6,6 +6,7 @@ __pycache__/
 Data/
 ckpts/
 data/
+*.pt
 
 # Logs / tmp
 *.log

@@ -41,10 +41,14 @@ def evaluate_safety_head(
         else:
             dtype = torch.float32
         
+        # Use "cuda:0" to avoid full-disk offload (which raises in accelerate).
+        # Use low_cpu_mem_usage=False if OOM on load.
+        device_map = "cuda:0" if torch.cuda.is_available() else None
         base_model = AutoModelForCausalLM.from_pretrained(
             model_name,
-            dtype=dtype,  # 直接指定 dtype
-            device_map="auto"  # 使用 "auto" 让 accelerate 自动分配设备
+            torch_dtype=dtype,
+            device_map=device_map,
+            low_cpu_mem_usage=True,
         )
         # 注意：使用 device_map="auto" 时，不要调用 .to()，因为模型已经被自动分配到设备上了
         base_model.eval()
@@ -85,16 +89,24 @@ def evaluate_safety_head(
     
     predictions = []
     references = []
-    
+    first_gt_1_list = []   # first position where label==1 per sample
+    first_pred_1_list = []  # first position where pred==1 per sample
+
     autocast_enabled = bf16 and (device.type == "cuda")
-    
+
+    def first_pos(lst, val=1):
+        for i, x in enumerate(lst):
+            if x == val:
+                return i
+        return None
+
     with torch.no_grad(), torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=autocast_enabled):
         for batch in tqdm(test_loader):
             assert batch["labels"].size(0) == 1, "Current evaluation assumes batch_size=1 for streaming."
-    
+
             labels = batch["labels"].to(device)            # (1, T_assistant)
             feat = batch["embeddings"].to(device)          # (seq, hidden)
-    
+
             assistant_start = batch["assistant_start"]
             if isinstance(assistant_start, (list, tuple)):
                 assistant_start = assistant_start[0]
@@ -102,38 +114,59 @@ def evaluate_safety_head(
                 assistant_start = int(assistant_start.item())
             else:
                 assistant_start = int(assistant_start)
-    
+
             logits = safety_head(feat, assistant_start, )
-    
+
             preds = logits.argmax(dim=-1)  # (1, T_assistant)
-    
+
             preds_valid = preds.view(-1).tolist()
             labels_valid = labels.view(-1).tolist()
-    
+
             predictions.append(preds_valid)
             references.append(labels_valid[-1])
-       
+            first_gt_1_list.append(first_pos(labels_valid, 1))
+            first_pred_1_list.append(first_pos(preds_valid, 1))
+
+    # Compare first label-1 position (only for harmful responses)
+    harmful_indices = [i for i in range(len(references)) if references[i] == 1]
+    gt_positions = [first_gt_1_list[i] for i in harmful_indices if first_gt_1_list[i] is not None]
+    pred_positions = []
+    for i in harmful_indices:
+        if first_gt_1_list[i] is not None:
+            p = first_pred_1_list[i]
+            pred_positions.append(len(predictions[i]) if p is None else p)
+    if gt_positions:
+        diffs = [p - g for g, p in zip(gt_positions, pred_positions)]
+        mae = sum(abs(d) for d in diffs) / len(diffs)
+        print("\n-----------First harmful token (label 1) position-----------")
+        print(f"Only harmful responses (n={len(gt_positions)}): GT first-1 vs Pred first-1")
+        print(f"MAE (|pred_pos - gt_pos|): {mae:.2f}")
+        print(f"Mean diff (pred - gt, negative=earlier): {sum(diffs)/len(diffs):.2f}")
+
     return predictions, references
 
 
 if __name__=='__main__':
-    model_name = "Qwen/Qwen3-8B"
-    ckpt_path = "ckpts/Qwen-Qwen3-8B/seval.pt"
-    test_dataset_dir = "data/s_eval/qwen3_8b/testset/"
-    idx_layer = 21
+    import argparse
+    p = argparse.ArgumentParser()
+    p.add_argument("--ckpt_path", type=str, default="ckpts/Qwen-Qwen3-8B/seval.pt")
+    p.add_argument("--test_dataset_dir", type=str, default="data/s_eval/qwen3_8b/test/")
+    p.add_argument("--model_name", type=str, default="Qwen/Qwen3-8B")
+    p.add_argument("--idx_layer", type=int, default=21)
+    args = p.parse_args()
 
     predictions, references = evaluate_safety_head(
-        ckpt_path=ckpt_path,
-        test_dataset_dir=test_dataset_dir,
-        model_name=model_name,
-        idx_layer=idx_layer,
+        ckpt_path=args.ckpt_path,
+        test_dataset_dir=args.test_dataset_dir,
+        model_name=args.model_name,
+        idx_layer=args.idx_layer,
         max_length=4096,
         batch_size=1,
         num_workers=2,
         bf16=True
     )
 
-    print('ckpt_path: ', ckpt_path)
+    print('ckpt_path: ', args.ckpt_path)
     print('-------------Response level-------- \n', classification_report(references, [pred[-2] for pred in predictions], digits=4))
 
     print('\n-----------Streaming level-----------\n', classification_report(references, [max(pred) for pred in predictions], digits=4))
