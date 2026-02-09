@@ -268,7 +268,7 @@ def train(args):  # 定义训练函数，args为命令行参数
         # 记录最后一个完成的epoch
         last_completed_epoch = epoch
 
-    print("Training complete!")
+    print("Training complete!")  # 打印训练完成信息
 
     # 保存最后一个完成的epoch的模型
     if last_completed_epoch >= 0:  # 确保至少完成了一个epoch
