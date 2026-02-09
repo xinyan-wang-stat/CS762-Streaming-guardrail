@@ -1,0 +1,177 @@
+alpha,response_accuracy,response_precision_macro,response_recall_macro,response_f1_macro,response_precision_weighted,response_recall_weighted,response_f1_weighted,streaming_accuracy,streaming_precision_macro,streaming_recall_macro,streaming_f1_macro,streaming_precision_weighted,streaming_recall_weighted,streaming_f1_weighted
+-------------Response level-------- 
+               precision    recall  f1-score   support
+
+           0     0.4444    0.5000    0.4706         8
+           1     0.6364    0.5833    0.6087        12
+
+    accuracy                         0.5500        20
+   macro avg     0.5404    0.5417    0.5396        20
+weighted avg     0.5596    0.5500    0.5535        20
+
+
+-----------Streaming level-----------
+               precision    recall  f1-score   support
+
+           0     0.0000    0.0000    0.0000         8
+           1     0.6000    1.0000    0.7500        12
+
+    accuracy                         0.6000        20
+   macro avg     0.3000    0.5000    0.3750        20
+weighted avg     0.3600    0.6000    0.4500        20
+
+0,0.5500,0.5404,0.5417,0.5396,0.5596,0.5500,0.5535,0.6000,0.3000,0.5000,0.3750,0.3600,0.6000,0.4500
+-------------Response level-------- 
+               precision    recall  f1-score   support
+
+           0     0.8000    0.5000    0.6154         8
+           1     0.7333    0.9167    0.8148        12
+
+    accuracy                         0.7500        20
+   macro avg     0.7667    0.7083    0.7151        20
+weighted avg     0.7600    0.7500    0.7350        20
+
+
+-----------Streaming level-----------
+               precision    recall  f1-score   support
+
+           0     0.0000    0.0000    0.0000         8
+           1     0.6000    1.0000    0.7500        12
+
+    accuracy                         0.6000        20
+   macro avg     0.3000    0.5000    0.3750        20
+weighted avg     0.3600    0.6000    0.4500        20
+
+0.1,0.7500,0.7667,0.7083,0.7151,0.7600,0.7500,0.7350,0.6000,0.3000,0.5000,0.3750,0.3600,0.6000,0.4500
+-------------Response level-------- 
+               precision    recall  f1-score   support
+
+           0     0.5000    0.7500    0.6000         8
+           1     0.7500    0.5000    0.6000        12
+
+    accuracy                         0.6000        20
+   macro avg     0.6250    0.6250    0.6000        20
+weighted avg     0.6500    0.6000    0.6000        20
+
+
+-----------Streaming level-----------
+               precision    recall  f1-score   support
+
+           0     0.5000    0.1250    0.2000         8
+           1     0.6111    0.9167    0.7333        12
+
+    accuracy                         0.6000        20
+   macro avg     0.5556    0.5208    0.4667        20
+weighted avg     0.5667    0.6000    0.5200        20
+
+0.2,0.6000,0.6250,0.6250,0.6000,0.6500,0.6000,0.6000,0.6000,0.5556,0.5208,0.4667,0.5667,0.6000,0.5200
+-------------Response level-------- 
+               precision    recall  f1-score   support
+
+           0     0.7778    0.8750    0.8235         8
+           1     0.9091    0.8333    0.8696        12
+
+    accuracy                         0.8500        20
+   macro avg     0.8434    0.8542    0.8465        20
+weighted avg     0.8566    0.8500    0.8512        20
+
+
+-----------Streaming level-----------
+               precision    recall  f1-score   support
+
+           0     0.0000    0.0000    0.0000         8
+           1     0.6000    1.0000    0.7500        12
+
+    accuracy                         0.6000        20
+   macro avg     0.3000    0.5000    0.3750        20
+weighted avg     0.3600    0.6000    0.4500        20
+
+0.3,0.8500,0.8434,0.8542,0.8465,0.8566,0.8500,0.8512,0.6000,0.3000,0.5000,0.3750,0.3600,0.6000,0.4500
+-------------Response level-------- 
+               precision    recall  f1-score   support
+
+           0     0.6667    0.7500    0.7059         8
+           1     0.8182    0.7500    0.7826        12
+
+    accuracy                         0.7500        20
+   macro avg     0.7424    0.7500    0.7442        20
+weighted avg     0.7576    0.7500    0.7519        20
+
+
+-----------Streaming level-----------
+               precision    recall  f1-score   support
+
+           0     0.6667    0.2500    0.3636         8
+           1     0.6471    0.9167    0.7586        12
+
+    accuracy                         0.6500        20
+   macro avg     0.6569    0.5833    0.5611        20
+weighted avg     0.6549    0.6500    0.6006        20
+
+0.4,0.7500,0.7424,0.7500,0.7442,0.7576,0.7500,0.7519,0.6500,0.6569,0.5833,0.5611,0.6549,0.6500,0.6006
+-------------Response level-------- 
+               precision    recall  f1-score   support
+
+           0     0.8750    0.8750    0.8750         8
+           1     0.9167    0.9167    0.9167        12
+
+    accuracy                         0.9000        20
+   macro avg     0.8958    0.8958    0.8958        20
+weighted avg     0.9000    0.9000    0.9000        20
+
+
+-----------Streaming level-----------
+               precision    recall  f1-score   support
+
+           0     1.0000    0.1250    0.2222         8
+           1     0.6316    1.0000    0.7742        12
+
+    accuracy                         0.6500        20
+   macro avg     0.8158    0.5625    0.4982        20
+weighted avg     0.7789    0.6500    0.5534        20
+
+0.5,0.9000,0.8958,0.8958,0.8958,0.9000,0.9000,0.9000,0.6500,0.8158,0.5625,0.4982,0.7789,0.6500,0.5534
+-------------Response level-------- 
+               precision    recall  f1-score   support
+
+           0     0.6667    0.2500    0.3636         8
+           1     0.6471    0.9167    0.7586        12
+
+    accuracy                         0.6500        20
+   macro avg     0.6569    0.5833    0.5611        20
+weighted avg     0.6549    0.6500    0.6006        20
+
+
+-----------Streaming level-----------
+               precision    recall  f1-score   support
+
+           0     0.5000    0.1250    0.2000         8
+           1     0.6111    0.9167    0.7333        12
+
+    accuracy                         0.6000        20
+   macro avg     0.5556    0.5208    0.4667        20
+weighted avg     0.5667    0.6000    0.5200        20
+
+0.6,0.6500,0.6569,0.5833,0.5611,0.6549,0.6500,0.6006,0.6000,0.5556,0.5208,0.4667,0.5667,0.6000,0.5200
+-------------Response level-------- 
+               precision    recall  f1-score   support
+
+           0     0.5714    0.5000    0.5333         8
+           1     0.6923    0.7500    0.7200        12
+
+    accuracy                         0.6500        20
+   macro avg     0.6319    0.6250    0.6267        20
+weighted avg     0.6440    0.6500    0.6453        20
+
+
+-----------Streaming level-----------
+               precision    recall  f1-score   support
+
+           0     0.5000    0.1250    0.2000         8
+           1     0.6111    0.9167    0.7333        12
+
+    accuracy                         0.6000        20
+   macro avg     0.5556    0.5208    0.4667        20
+weighted avg     0.5667    0.6000    0.5200        20
+
+0.7,0.6500,0.6319,0.6250,0.6267,0.6440,0.6500,0.6453,0.6000,0.5556,0.5208,0.4667,0.5667,0.6000,0.5200

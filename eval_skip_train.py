@@ -44,7 +44,8 @@ if __name__ == '__main__':
         max_length=args.max_length,
         batch_size=args.batch_size,
         num_workers=args.num_workers,
-        bf16=args.bf16
+        bf16=args.bf16,
+        return_legacy_format=True  # 使用旧格式以保持向后兼容
     )
 
     print('\n' + '=' * 60)

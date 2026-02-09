@@ -20,7 +20,7 @@ import numpy as np  # 导入numpy库，用于数值计算
 import argparse  # 导入argparse模块，用于命令行参数解析
 
 from dataset import SafetyDataset  # 从dataset模块导入SafetyDataset数据集类
-from eval import evaluate_safety_head  # 从eval模块导入evaluate_safety_head评估函数
+from eval import evaluate_safety_head, evaluate_and_get_metrics  # 从eval模块导入评估函数
 
 
 def set_seed(seed: int):  # 定义函数：设置随机种子，确保实验可复现
@@ -290,21 +290,21 @@ def train(args):  # 定义训练函数，args为命令行参数
     gc.collect()  # 强制进行垃圾回收
     print("GPU 内存清理完成")
 
-    predictions, references = evaluate_safety_head(  # 调用评估函数，评估训练好的模型
-        ckpt_path=ckpt_path,  # 检查点路径（最后一个epoch的模型）
-        test_dataset_dir=args.test_dataset_dir,  # 测试数据集目录路径
-        model_name=args.model_name,  # 基础模型名称
-        idx_layer=args.idx_layer,  # 提取hidden states的层索引
-        max_length=4096,  # 最大序列长度
-        batch_size=1,  # 批次大小（流式处理要求为1）
-        num_workers=2,  # 数据加载进程数
-        bf16=True  # 启用bfloat16混合精度
+    # 使用新的评估函数获取结构化指标
+    metrics = evaluate_and_get_metrics(
+        ckpt_path=ckpt_path,
+        test_dataset_dir=args.test_dataset_dir,
+        model_name=args.model_name,
+        idx_layer=args.idx_layer,
+        max_length=4096,
+        batch_size=1,
+        num_workers=2,
+        bf16=True
     )
-
-    print('ckpt_path: ', ckpt_path)  # 打印检查点路径
-    print('-------------Response level-------- \n', classification_report(references, [pred[-2] for pred in predictions], digits=4))  # 打印响应级别（response-level）的分类报告：使用每个预测序列的倒数第二个token作为预测结果
-
-    print('\n-----------Streaming level-----------\n', classification_report(references, [max(pred) for pred in predictions], digits=4))  # 打印流式级别（streaming-level）的分类报告：使用每个预测序列的最大值作为预测结果
+    
+    print('\n========== 评估指标汇总 ==========')
+    print('Response Level:', metrics['response_level'])
+    print('Streaming Level:', metrics['streaming_level'])
 
 
 
