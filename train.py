@@ -200,16 +200,16 @@ def train(args):  # 定义训练函数，args为命令行参数
 
             with torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=bf16):  # 启用混合精度训练（自动类型转换）
 
-                # 前向传播，获取每个token的logits和response级别的logits
+                # 前向传播，获取每个token的logits
                 # logits形状: [Bs, N, D]（批次大小，序列长度，类别数）
-                # holistic_logits形状: [Bs, D]（批次大小，类别数）
-                logits, holistic_logits = safety_head(feat, assistant_start, return_holistic=True)  
+                logits = safety_head(feat, assistant_start)  
 
                 # Token级别的损失
                 loss_tok = criterion(logits.view(-1, logits.size(-1)), labels.view(-1))  # 计算交叉熵损失：将logits和labels展平后计算
 
-                # Response级别的损失
-                loss_hol = criterion(holistic_logits, response_label.unsqueeze(0))  # 计算response级别的交叉熵损失
+                # Response级别的损失（使用最后一个token的logits）
+                response_logits = logits[:, -1, :]  # 取最后一个token的logits，形状: (B, num_labels)
+                loss_hol = criterion(response_logits, response_label.unsqueeze(0))  # 计算response级别的交叉熵损失
 
                 # 组合损失：α * L_tok + (1-α) * L_hol
                 loss = args.alpha * loss_tok + (1 - args.alpha) * loss_hol

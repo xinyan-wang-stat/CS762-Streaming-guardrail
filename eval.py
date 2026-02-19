@@ -105,10 +105,11 @@ def evaluate_safety_head(
             else:
                 assistant_start = int(assistant_start)
     
-            logits, holistic_logits = safety_head(feat, assistant_start, return_holistic=True)
+            logits = safety_head(feat, assistant_start)
     
             preds = logits.argmax(dim=-1)  # (1, T_assistant) - token级别预测
-            holistic_pred = holistic_logits.argmax(dim=-1)  # (1,) - response级别预测
+            # 使用最后一个token的logits作为response级别预测
+            response_pred = logits[:, -1, :].argmax(dim=-1)  # (1,) - response级别预测（使用最后一个token的logits）
     
             preds_valid = preds.view(-1).tolist()
             labels_valid = labels.view(-1).tolist()
@@ -120,7 +121,7 @@ def evaluate_safety_head(
                 # 新格式：返回字典的列表
                 predictions.append({
                     'token_level': preds_valid,  # token级别的预测
-                    'response_level': holistic_pred.item()  # response级别的预测（使用holistic_logits）
+                    'response_level': response_pred.item()  # response级别的预测（使用最后一个token的logits）
                 })
             references.append(labels_valid[-1])
        
