@@ -13,8 +13,7 @@ TEST_DATA_DIR="data/annotated_output_dataset/test"
 BASE_SAVE_DIR="ckpts/seval_qwen3_8b_alpha_exp"
 
 # 设置要测试的 alpha 值
-#ALPHAS=(0 0.2 0.4 0.6 0.8 1.0)
-ALPHAS=(0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0)
+ALPHAS=(0 0.2 0.4 0.6 0.8 1.0)
 
 # 设置日志文件
 LOG_FILE="log_alpha_experiment.txt"
