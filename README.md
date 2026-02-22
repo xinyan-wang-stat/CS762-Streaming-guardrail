@@ -1,6 +1,6 @@
 # Streaming Guardrail
 
-This is the official repo for our course project of CS762 in fall 2026. 
+This is the official repo for our course project of CS762 in fall 2025. 
 
 **Setup:** Create a conda env and install dependencies:
 ```bash
