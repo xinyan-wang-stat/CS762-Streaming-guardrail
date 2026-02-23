@@ -2,6 +2,9 @@
 
 This is the official repo for our course project of CS762 in fall 2025. 
 
+![Workflow: streaming safety detection for harmful vs benign user queries](figure-workflow.png)
+
+
 **Setup:** Create a conda env and install dependencies:
 ```bash
 conda create -n stream python=3.10 -y
