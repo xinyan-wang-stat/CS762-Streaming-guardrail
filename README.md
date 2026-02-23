@@ -20,3 +20,17 @@ pip install -r requirements.txt
 - **models.py** — Streaming safety head (attention + CfcCell) that predicts token-level and response-level safety from cached hidden states.
 - **train.py** — Trains the safety head on cached data and runs evaluation on the test set.
 - **eval.py** — Loads a checkpoint and evaluates the safety head (response-level, streaming-level, and offset metrics; can save logits to JSONL).
+
+**Quick Start:**
+1. Convert CSV to HuggingFace dataset format:
+   ```bash
+   python utils/convert_csv_to_dataset.py --csv_path data/seval_qwen3_8b_sample.csv --output_dir data/seval_qwen3_8b_dataset
+   ```
+2. Train the safety head (cache will be built automatically if missing):
+   ```bash
+   python train.py \
+     --train_dataset_dir data/seval_qwen3_8b_dataset/train \
+     --test_dataset_dir data/seval_qwen3_8b_dataset/test \
+     --model_name Qwen/Qwen3-8B \
+     --save_dir ckpts/run1
+   ```
